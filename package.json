@@ -1,23 +1,23 @@
 {
-  "name": "@mediamonks/henk",
+  "name": "@mediamonks/display-upload",
   "version": "1.5.6",
-  "description": "Uploading files from one location to the other.",
+  "description": "Display.Monks upload tool. Uploads ad files to various platforms and vendors.",
   "main": "./src/index.js",
   "scripts": {
     "test": "mocha"
   },
   "author": "Mient-jan Stelling",
-  "homepage": "https://github.com/mediamonks/henk#readme",
+  "homepage": "https://github.com/mediamonks/display-upload#readme",
   "license": "MIT",
   "bin": {
-    "henk": "cli/henk.js"
+    "display-upload": "cli/displayUpload.js"
   },
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mediamonks/henk.git"
+    "url": "git+https://github.com/mediamonks/display-upload.git"
   },
   "dependencies": {
     "adform-upload-tool": "^1.0.3",

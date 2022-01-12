@@ -75,7 +75,7 @@ module.exports = {
       data.campaignId = targetCampaign.type;
     }
 
-    //write new values to henkrc so it's saved for later
+    //write new values to uploadrc so it's saved for later
     let rcData = await fs.readJson(filepathRc);
     const overwriteIndex = rcData.uploadConfigs.findIndex(config => config.type === data.type);
     rcData.uploadConfigs[overwriteIndex] = data;

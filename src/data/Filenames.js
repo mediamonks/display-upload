@@ -1,4 +1,4 @@
 module.exports = {
-	RC: '.henkrc',
+	RC: '.uploadrc',
 	GITIGNORE: '.gitignore',
 };

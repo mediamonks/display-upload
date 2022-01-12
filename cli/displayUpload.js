@@ -3,9 +3,9 @@
 const program = require('commander');
 const chalk = require('chalk');
 const package = require('../package.json');
-const henk = require('../src/index');
+const displayUpload = require('../src/index');
 
-console.log(`Welcome to ${chalk.green.bold(`HENK`)} (transport service) v${package.version}`);
+console.log(`Welcome to ${chalk.green.bold(`the Display.Monks Upload Tool`)} v${package.version}`);
 
 program
 	.version(package.version)
@@ -13,4 +13,4 @@ program
 
 // program
 
-henk({}, true);
+displayUpload({}, true);

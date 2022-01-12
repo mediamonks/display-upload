@@ -12,7 +12,7 @@ module.exports = async (data = {}, cli) => {
   const filepathRc = `./${Filenames.RC}`;
   const filepathGitIgnore = `./${Filenames.GITIGNORE}`;
 
-  // checking for a .henkrc
+  // checking for a .uploadrc
   let hasGitIgnore = await fs.pathExists(filepathGitIgnore);
 
   // checking if .gitignore is exists
@@ -48,7 +48,7 @@ module.exports = async (data = {}, cli) => {
   }
 
   if (await fs.pathExists(filepathRc)) {
-    // henkrc exists, reading data and validating
+    // uploadrc exists, reading data and validating
     let rc = {};
 
     try {
@@ -56,7 +56,7 @@ module.exports = async (data = {}, cli) => {
     }
 
     catch (err) {
-      throw new Error('cant read json from .henkrc, please delete it and try again');
+      throw new Error('cant read json from .uploadrc, please delete it and try again');
     }
 
     if (rc.hasOwnProperty('uploadConfigs')) {
@@ -65,7 +65,7 @@ module.exports = async (data = {}, cli) => {
       };
     }
 
-    else { // henkrc exists but not in correct new structure
+    else { // uploadrc exists but not in correct new structure
       if (rc.hasOwnProperty('type')) { // looks like the object follows old structure
         data = {
           uploadConfigs: [
@@ -83,7 +83,7 @@ module.exports = async (data = {}, cli) => {
   }
 
   else {
-    console.log('henkrc doesnt exist, creating creating new data obj')
+    console.log('uploadrc doesnt exist, creating creating new data obj')
     data = {
       uploadConfigs: []
     }
@@ -148,7 +148,7 @@ module.exports = async (data = {}, cli) => {
 
   if (overwriteIndex === -1) {
     //console.log("adding new object to data")
-    data.uploadConfigs.push(targetData); //this config was not in the henkrc yet so adding a new object
+    data.uploadConfigs.push(targetData); //this config was not in the uploadrc yet so adding a new object
   }
   else {
     data.uploadConfigs[overwriteIndex] = targetData; //found it, so overwriting the existing object

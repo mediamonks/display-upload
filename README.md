@@ -14,16 +14,16 @@ Currently supported
 
 ## Installation
 ```sh
-yarn global add @mediamonks/henk
+yarn global add @mediamonks/display-upload
 ```
 
 ```sh
-npm i -G @mediamonks/henk
+npm i -G @mediamonks/display-upload
 ```
 
 ## Lets start
 ```sh
-henk
+display-upload
 ```
 Now that the CLI guides you through uploads
 

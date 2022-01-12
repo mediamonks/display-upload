@@ -55,17 +55,17 @@ module.exports = {
 
     dc.cookies = data.cookies;
 
-    await writeToHenkrc(data);
+    await writeToUploadrc(data);
     
     //logged in now presumably
     
 
     // Find/create advertiser
     let advertiser;
-    console.log('Advertiser ' + data.advertiserName + ' - seeing if already stored in local henkrc file..')
+    console.log('Advertiser ' + data.advertiserName + ' - seeing if already stored in local uploadrc file..')
 
     if (!data.advertiser) {
-      console.log('Advertiser ' + data.advertiserName + ' - not in henkrc file, seeing if exists in Studio..')
+      console.log('Advertiser ' + data.advertiserName + ' - not in uploadrc file, seeing if exists in Studio..')
       let advertisers = await dc.getAdvertiser(data.advertiserName);
       advertisers = advertisers.data.records;
 
@@ -91,7 +91,7 @@ module.exports = {
         const { createNewAdvertiser } = await inquirer.prompt({
           type: 'confirm',
           name: 'createNewAdvertiser',
-          message: 'Advertiser ' + data.advertiserName + ' - doesn\'t exist yet. Should Henk create it now?'
+          message: 'Advertiser ' + data.advertiserName + ' - doesn\'t exist yet. Should Display-Upload create it now?'
         });
         if (!createNewAdvertiser) return ''
 
@@ -115,10 +115,10 @@ module.exports = {
 
     // Find/create campaign
     let campaign;
-    console.log('Campaign ' + data.campaignName + ' - seeing if already stored in local henkrc file..')
+    console.log('Campaign ' + data.campaignName + ' - seeing if already stored in local uploadrc file..')
 
     if (!data.campaign) {
-      console.log('Campaign ' + data.campaignName + ' - not in henkrc file, seeing if exists in Studio..')
+      console.log('Campaign ' + data.campaignName + ' - not in uploadrc file, seeing if exists in Studio..')
       let campaigns = await dc.getCampaign(data.advertiser, data.campaignName);
       campaigns = campaigns.data.records;
 
@@ -144,7 +144,7 @@ module.exports = {
         const { createNewCampaign } = await inquirer.prompt({
           type: 'confirm',
           name: 'createNewCampaign',
-          message: 'Campaign ' + data.campaignName + ' - doesn\'t exist yet. Should Henk create it now?'
+          message: 'Campaign ' + data.campaignName + ' - doesn\'t exist yet. Should Display-Upload create it now?'
         });
         if (!createNewCampaign) return ''
         console.log('Campaign ' + data.campaignName + ' - creating in Studio')
@@ -165,7 +165,7 @@ module.exports = {
 
 
     // Find/Create creatives
-    if (!data.creatives) data.creatives = []; // if the creatives array isn't yet in henkrc
+    if (!data.creatives) data.creatives = []; // if the creatives array isn't yet in uploadrc
 
     let creative;
     const files = await fs.readdirSync(data.inputDir)
@@ -175,11 +175,11 @@ module.exports = {
       let creativeName = filename.substr(0, filename.indexOf('.zip')) // creative name is the filename without the .zip
       if (filename.indexOf('.html')) creativeName = creativeName.substr(0, creativeName.indexOf('.html')); // remove the .html part from the name if it's also there
 
-      console.log('Filename ' + filename + ' - seeing if already stored in local henkrc file..')
+      console.log('Filename ' + filename + ' - seeing if already stored in local uploadrc file..')
       const theIndex = data.creatives.findIndex(creative => creative.filename === filename);
 
       if (theIndex === -1) {
-        console.log('Filename ' + filename + ' - not in henkrc file, seeing if exists in Studio..')
+        console.log('Filename ' + filename + ' - not in uploadrc file, seeing if exists in Studio..')
 
         let searchResult = await dc.getCreative(data.campaign, creativeName);
         searchResult = searchResult.data.records;
@@ -192,7 +192,7 @@ module.exports = {
           }
 
           else {
-            console.log('Creative ' + creativeName + ' - doesn\'t exist yet. Henk will create one for you.')
+            console.log('Creative ' + creativeName + ' - doesn\'t exist yet. Display-Upload will create one for you.')
 
             // make new creative
             const creativeData = await promptNewCreative(creativeName);
@@ -223,7 +223,7 @@ module.exports = {
         }
 
         if (searchResult.length === 0) { // creative doesn't exist on studio yet
-          console.log('Creative ' + creativeName + ' - doesn\'t exist yet. Henk will create one for you.')
+          console.log('Creative ' + creativeName + ' - doesn\'t exist yet. Display-Upload will create one for you.')
 
           // make new creative
           const creativeData = await promptNewCreative(creativeName);
@@ -238,7 +238,7 @@ module.exports = {
       }
 
       else {
-        // console.log('Found a match in local henkrc.')
+        // console.log('Found a match in local uploadrc.')
         creative = data.creatives[theIndex]
       }
 
@@ -264,12 +264,12 @@ module.exports = {
     const previewUrl = await dc.getPreviewUrl(data.campaign);
     console.log(previewUrl.data[0].previewUrl)
 
-    await writeToHenkrc(data);
+    await writeToUploadrc(data);
   },
 };
 
-async function writeToHenkrc(data) {
-  //write the new data object to the henkrc file
+async function writeToUploadrc(data) {
+  //write the new data object to the uploadrc file
   let rcData = await fs.readJson(Filenames.RC); //read current data from file
   const overwriteIndex = rcData.uploadConfigs.findIndex(config => config.type === data.type); //figure our which object in the array to overwrite
   rcData.uploadConfigs[overwriteIndex] = data; //overwrite correct obj
