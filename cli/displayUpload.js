@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const package = require('../package.json');
 const displayUpload = require('../src/index');
 
-console.log(`Welcome to ${chalk.green.bold(`the Display.Monks Upload Tool`)} v${package.version}`);
+console.log(`Welcome to the ${chalk.green.bold(`Display.Monks Upload Tool`)} v${package.version}`);
 
 program
 	.version(package.version)
