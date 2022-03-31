@@ -4,6 +4,8 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 const log = require('tracer').colorConsole({ level: 'debug' });
 
+
+
 const getFileData = (filePath) => ({
     path: filePath,
     name: path.basename(filePath),
@@ -13,11 +15,21 @@ const getFileData = (filePath) => ({
 
 const getCookieStr = (cookies) => {
     let cookieStr = '';
-    for (let i = 0; i < cookies.length; i++) {
-        cookieStr += cookies[i].name + '=' + cookies[i].value + '; '
+
+    let googleCookies = cookies.filter(cookie => {
+        if (cookie.domain === '.google.com') {
+            if (cookie.name === 'SID' || cookie.name === 'SSID' || cookie.name === 'HSID') {
+                return cookie;
+            }
+        }
+    });
+
+    for (let i = 0; i < googleCookies.length; i++) {
+        cookieStr += googleCookies[i].name + '=' + googleCookies[i].value + '; '
     }
     return cookieStr;
 }
+
 
 module.exports = class Doubleclick {
 
@@ -25,9 +37,15 @@ module.exports = class Doubleclick {
         cookies: []
     }) {
         this.cookies = options.cookies;
-        this.dcUrl = 'https://www.google.com/doubleclick/studio/service';
+        this.dcUrl = 'https://www.google.com/doubleclick/studio/';
+        this.dcApiUrl = 'https://www.google.com/doubleclick/studio/service';
         this.dcUploadUrl = 'https://www.google.com/doubleclick/studio/upload-http';
         this.accountId = '33345';
+
+        // this.proxy = { // for testing with Charles
+        //     host: 'localhost',
+        //     port: 8888
+        // }
     }
 
     async login(options = {}) {
@@ -106,11 +124,6 @@ module.exports = class Doubleclick {
     async uploadCreative(creative) {
         const file = getFileData(creative.path);
 
-        const proxy = { // for testing with Charles
-            host: 'localhost',
-            port: 8888
-        }
-
         const data = {
             "TYPE":"CREATIVE",
             "ACCOUNT_ID":creative.account.id,
@@ -129,7 +142,7 @@ module.exports = class Doubleclick {
 
         const result = await axios.post( this.dcUploadUrl, data, {
             headers,
-            //proxy
+            proxy: this.proxy || ''
         });
 
         const params = {
@@ -143,7 +156,7 @@ module.exports = class Doubleclick {
         return await axios.post( this.dcUploadUrl, file.data, {
             headers,
             params,
-            // proxy
+            proxy: this.proxy || ''
         });
     }
 
@@ -158,17 +171,39 @@ module.exports = class Doubleclick {
         })
     }
 
-    async findEntity(data) {
-        let headers = { Cookie: getCookieStr(this.cookies) };
-
-        const proxy = { // for testing with Charles
-            host: 'localhost',
-            port: 8888
+    async getXsrfToken() {
+        if (this.cachedXsrfToken) {
+            return this.cachedXsrfToken;
         }
 
-        return await axios.post(this.dcUrl, data, {
+        let headers = {
+            Cookie: getCookieStr(this.cookies),
+        }
+
+        const result = await axios.get(this.dcUrl, {
             headers,
-            //proxy
+            proxy: this.proxy || ''
+        });
+
+        const startPos = result.data.indexOf('xsrfToken') + 12;
+        const endPos = result.data.indexOf('\",', startPos);
+        const xsrfTokenString = result.data.substr(startPos, endPos-startPos);
+
+        this.cachedXsrfToken = xsrfTokenString; //store as var for future usage
+        return xsrfTokenString;
+    }
+
+    async findEntity(data) {
+        const xsrfToken = await this.getXsrfToken();
+
+        let headers = {
+            Cookie: getCookieStr(this.cookies),
+            "x-xsrf-token": xsrfToken
+        }
+
+        return await axios.post(this.dcApiUrl, data, {
+            headers,
+            proxy: this.proxy || ''
         });
     }
 }
