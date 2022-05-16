@@ -1,9 +1,8 @@
 const axios = require('axios');
 const fs = require('fs');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const path = require('path');
-const log = require('tracer').colorConsole({ level: 'debug' });
-
+// const log = require('tracer').colorConsole({ level: 'debug' });
 
 
 const getFileData = (filePath) => ({
@@ -34,6 +33,7 @@ const getCookieStr = (cookies) => {
 module.exports = class Doubleclick {
 
     constructor (options = {
+        chromeExecutable: '',
         cookies: []
     }) {
         this.cookies = options.cookies;
@@ -41,7 +41,7 @@ module.exports = class Doubleclick {
         this.dcApiUrl = 'https://www.google.com/doubleclick/studio/service';
         this.dcUploadUrl = 'https://www.google.com/doubleclick/studio/upload-http';
         this.accountId = '33345';
-
+        this.chromeExecutable = options.chromeExecutable;
         // this.proxy = { // for testing with Charles
         //     host: 'localhost',
         //     port: 8888
@@ -49,8 +49,11 @@ module.exports = class Doubleclick {
     }
 
     async login(options = {}) {
+
+        console.log(this.chromeExecutable);
         const browser = await puppeteer.launch({
-            headless: false
+            headless: false,
+            executablePath: this.chromeExecutable
         });
         const page = await browser.newPage();
         await page.goto('https://accounts.google.com/');

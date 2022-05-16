@@ -1,11 +1,11 @@
 const validateActionInput = require('../util/validateActionInput');
 const validateNotEmpty = require('../util/validate/validateNotEmpty');
-const validateEmail = require('../util/validate/validateEmail');
+// const validateEmail = require('../util/validate/validateEmail');
 const AdformUploadTool = require('adform-upload-tool');
 const inquirer = require('inquirer');
 const Filenames = require('../data/Filenames');
 const fs = require('fs-extra');
-const path = require('path');
+// const path = require('path');
 
 module.exports = {
   questions: [

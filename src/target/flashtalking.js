@@ -5,7 +5,7 @@ const validateEmail = require('../util/validate/validateEmail');
 const inquirer = require('inquirer');
 const Filenames = require('../data/Filenames');
 const fs = require('fs-extra');
-const path = require('path');
+// const path = require('path');
 
 module.exports = {
   questions: [

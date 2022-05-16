@@ -1,11 +1,11 @@
 const validateActionInput = require('../util/validateActionInput');
-const validateNotOutsideWorkingDir = require('../util/validate/validateNotOutsideWorkingDir');
+// const validateNotOutsideWorkingDir = require('../util/validate/validateNotOutsideWorkingDir');
 const validateNotEmpty = require('../util/validate/validateNotEmpty');
 const Uploader = require('s3-batch-upload').default;
-const Filenames = require('../data/Filenames');
-const fs = require('fs-extra');
-const path = require('path');
-const opener = require('opener');
+// const Filenames = require('../data/Filenames');
+// const fs = require('fs-extra');
+// const path = require('path');
+// const open = require('open');
 
 module.exports = {
   questions: [

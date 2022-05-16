@@ -2,10 +2,10 @@ const validateActionInput = require('../util/validateActionInput');
 const validateNotEmpty = require('../util/validate/validateNotEmpty');
 const validateEmail = require('../util/validate/validateEmail');
 const WorkspaceAPI = require('../util/Workspace');
-const inquirer = require('inquirer');
-const Filenames = require('../data/Filenames');
-const fs = require('fs-extra');
-const path = require('path');
+// const inquirer = require('inquirer');
+// const Filenames = require('../data/Filenames');
+// const fs = require('fs-extra');
+// const path = require('path');
 
 module.exports = {
   questions: [

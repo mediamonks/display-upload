@@ -2,15 +2,14 @@
 
 const program = require('commander');
 const chalk = require('chalk');
-const package = require('../package.json');
+const packageJson = require('../package.json');
 const displayUpload = require('../src/index');
 
-console.log(`Welcome to the ${chalk.green.bold(`Display.Monks Upload Tool`)} v${package.version}`);
+console.log(`Welcome to the ${chalk.green.bold(`Display.Monks Upload Tool`)} v${packageJson.version}`);
 
 program
-	.version(package.version)
+	.version(packageJson.version)
 	.parse(process.argv);
 
 // program
-
-displayUpload({}, true);
+displayUpload({}, true).then(result => console.log(`${chalk.green('✔')} done`));

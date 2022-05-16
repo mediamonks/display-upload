@@ -2,9 +2,9 @@ const validateActionInput = require('../util/validateActionInput');
 const validateNotOutsideWorkingDir = require('../util/validate/validateNotOutsideWorkingDir');
 const validateNotEmpty = require('../util/validate/validateNotEmpty');
 const uuid = require('uuid/v4');
-const opener = require('opener');
+const open = require('open');
 const Uploader = require('s3-batch-upload').default;
-const fs = require('fs-extra');
+// const fs = require('fs-extra');
 
 const s3 = require('./s3');
 
@@ -74,7 +74,7 @@ const preview = {
     }).upload();
 
     console.log(`go to http://${data.bucket}.s3.amazonaws.com/${data.outputDir}index.html`);
-    opener(`http://${data.bucket}.s3.amazonaws.com/${data.outputDir}index.html`);
+    open(`http://${data.bucket}.s3.amazonaws.com/${data.outputDir}index.html`);
   },
 };
 

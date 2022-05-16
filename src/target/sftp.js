@@ -1,5 +1,5 @@
 const validateActionInput = require('../util/validateActionInput');
-const validateNotOutsideWorkingDir = require('../util/validate/validateNotOutsideWorkingDir');
+// const validateNotOutsideWorkingDir = require('../util/validate/validateNotOutsideWorkingDir');
 const validateNotEmpty = require('../util/validate/validateNotEmpty');
 const Client = require('ssh2-sftp-client');
 const glob = require('glob-promise');

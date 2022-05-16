@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 
 const getCookie = (cookies, cookieID) => cookies.filter((cookie) => cookie.name === cookieID);
 
@@ -18,6 +18,7 @@ module.exports = class WorkspaceAPI {
 
         const browser = await puppeteer.launch({
             headless: true,
+            executablePath: options.chromeExecutable,
             defaultViewport: {
                 width: 900,
                 height: 700,

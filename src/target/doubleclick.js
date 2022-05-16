@@ -1,12 +1,12 @@
-const validateActionInput = require('../util/validateActionInput');
-const validateNotEmpty = require('../util/validate/validateNotEmpty');
-const validateEmail = require('../util/validate/validateEmail');
+// const validateActionInput = require('../util/validateActionInput');
+// const validateNotEmpty = require('../util/validate/validateNotEmpty');
+// const validateEmail = require('../util/validate/validateEmail');
 const DoubleClickStudio = require('../util/Doubleclick');
 const inquirer = require('inquirer');
 const Filenames = require('../data/Filenames');
 const fs = require('fs-extra');
-const path = require('path');
-const Spinner = require('cli-spinner').Spinner;
+// const path = require('path');
+// const Spinner = require('cli-spinner').Spinner;
 const chalk = require('chalk')
 
 
@@ -29,7 +29,17 @@ module.exports = {
 
   async action(data) {
 
-    const dc = new DoubleClickStudio();
+    const { chromeExecutable } = await inquirer.prompt({
+      type: 'input',
+      name: 'chromeExecutable',
+      message: 'Path to chrome executable (c:\\\\path\\\\to\\\\chrome.exe)'
+    });
+
+    data.chromeExecutable = chromeExecutable;
+
+    const dc = new DoubleClickStudio({
+      chromeExecutable
+    });
 
     if (!data.hasOwnProperty('cookies')) {
       const { proceedToLogin } = await inquirer.prompt({
