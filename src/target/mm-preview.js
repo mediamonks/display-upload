@@ -7,6 +7,7 @@ const Uploader = require('s3-batch-upload').default;
 // const fs = require('fs-extra');
 
 const s3 = require('./s3');
+const uID = uuidv4();
 
 const preview = {
   questions: [
@@ -41,18 +42,19 @@ const preview = {
 	  {
 		  type: 'input',
 		  name: 'outputDir',
-		  description: 'Please fill in the target directory:',
-		  default: () => `${uuidv4()}/`,
-		  validate: validateNotEmpty,
-		  errorMessage: 'Missing target ',
-		  required: true,
+			message: `Please fill in the target directory:`,
+			default: () => `${uID}/`,
+		  description: `Please fill in the target directory:`,
+			required: true,
 	  },
 
   ],
   async action(data) {
     if (!data.outputDir) {
-      data.outputDir = `${uuid()}/`;
-    }
+      data.outputDir = `${uID}`;
+    } else if(data.outputDir !== `${uID}/`) {
+			data.outputDir = `${uID}/${data.outputDir}`
+		}
 
     validateActionInput(data, this.questions);
 
