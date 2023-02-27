@@ -8,7 +8,7 @@ const fs = require('fs-extra');
 const inquirer = require('inquirer');
 const path = require('path');
 
-module.exports = async (data = {}, cli) => {
+module.exports = async (options = {}, cli) => {
   const filepathRc = `./${Filenames.RC}`;
   const filepathGitIgnore = `./${Filenames.GITIGNORE}`;
 
@@ -17,7 +17,7 @@ module.exports = async (data = {}, cli) => {
 
   // checking if .gitignore is exists
   if (!hasGitIgnore) {
-    const { shouldCreateGitIgnore } = await inquirer.prompt({
+    const {shouldCreateGitIgnore} = await inquirer.prompt({
       type: 'confirm',
       name: 'shouldCreateGitIgnore',
       message: 'No .gitignore found should i create it?',
@@ -35,7 +35,7 @@ module.exports = async (data = {}, cli) => {
     const regEx = new RegExp(Filenames.RC, 'gm');
 
     if (!regEx.test(gitIgnoreContent)) {
-      const { shouldAddIt } = await inquirer.prompt({
+      const {shouldAddIt} = await inquirer.prompt({
         type: 'confirm',
         name: 'shouldAddIt',
         message: `No ${Filenames.RC} was added to the ${Filenames.GITIGNORE}, should i add it?`,
@@ -90,28 +90,28 @@ module.exports = async (data = {}, cli) => {
   }
 
   const choices = [
-    { name: 'Mediamonks Preview', value: 'mm-preview' },
-    { name: 'Adform', value: 'adform' },
+    {name: 'Mediamonks Preview', value: 'mm-preview'},
+    {name: 'Adform', value: 'adform'},
     // { name: 'Workspace', value: 'workspace' },
-    { name: 'Flashtalking', value: 'flashtalking' },
-    { name: 'Google DoubleClick Studio', value: 'doubleclick'},
-    { name: 'SFTP (alpha)', value: 'sftp' },
+    {name: 'Flashtalking', value: 'flashtalking'},
+    {name: 'Google DoubleClick Studio', value: 'doubleclick'},
+    {name: 'SFTP (alpha)', value: 'sftp'},
     // { name: 'Amazon S3', value: 's3', disabled: true },
     // { name: 'FTP', value: 'ftp', disabled: true },
     // { name: 'Netflix Monet', value: 'monet', disabled: true },
 
   ];
 
-  data.uploadConfigs.forEach( config => {
+  data.uploadConfigs.forEach(config => {
     const configIndex = choices.findIndex(choice => config.type === choice.value);
     if (configIndex !== -1) choices[configIndex].name += ' (Config Found)';
   })
 
-  const uploadTarget = await inquirer.prompt({
-      type: 'list',
-      name: 'type',
-      message: 'Where do you want to upload?',
-      choices: choices,
+  uploadTarget = await conditionalPrompt(options, {
+    type: 'list',
+    name: 'type',
+    message: 'Where do you want to upload?',
+    choices: choices,
   });
 
   const target = targets[uploadTarget.type];
@@ -120,15 +120,14 @@ module.exports = async (data = {}, cli) => {
     throw new Error(`unknown target ${uploadTarget.type}`);
   }
 
-  let [ targetData ] = data.uploadConfigs.filter( config => config.type === uploadTarget.type ) ;
-  if (!targetData) targetData = { type: uploadTarget.type };
+  let [targetData] = data.uploadConfigs.filter(config => config.type === uploadTarget.type);
+  if (!targetData) targetData = {type: uploadTarget.type};
 
-  //console.log(targetData);
-
-  // let targetData = {};
-  // if (data.uploadConfigs) [ targetData ] = data.uploadConfigs.filter( config => config.type === uploadTarget.type );
-  // else targetData = { type: uploadTarget.type };
-  // [ targetData ] = data.uploadConfigs.filter( config => config.type === uploadTarget.type );
+  // quick hack to allow overwrite of inputDir and outputDir if using mm-preview
+  targetData = {
+    ...targetData,
+    ...options // options from commandline args could overwrite some of the keys in targetData like type, inputDir, outputDir
+  }
 
   targetData = await conditionalPrompt(targetData, {
     type: 'input',
@@ -154,9 +153,10 @@ module.exports = async (data = {}, cli) => {
     data.uploadConfigs[overwriteIndex] = targetData; //found it, so overwriting the existing object
   }
 
-  await fs.writeJson(filepathRc, data);
+  await fs.writeJSON(filepathRc, data, {spaces: 2})
 
-  await target.action(targetData);
+  console.log(targetData)
+  // await target.action(targetData);
 
   console.log(`Done, Have a nice day.`);
 };
