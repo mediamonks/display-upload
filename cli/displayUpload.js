@@ -16,7 +16,5 @@ program
 
 const options = program.opts();
 
-console.log(options)
-
 // program
 displayUpload(options, true).then(result => console.log(`${chalk.green('✔')} done`));
