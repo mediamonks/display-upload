@@ -155,8 +155,8 @@ module.exports = async (options = {}, cli) => {
 
   await fs.writeJSON(filepathRc, data, {spaces: 2})
 
-  console.log(targetData)
-  // await target.action(targetData);
+  // console.log(targetData)
+  await target.action(targetData);
 
   console.log(`Done, Have a nice day.`);
 };
