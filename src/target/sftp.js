@@ -5,7 +5,7 @@ const Client = require('ssh2-sftp-client');
 const glob = require('glob-promise');
 const path = require('path');
 const isFile = require('../util/isFile');
-const ProgressBar = require('progress');
+// const ProgressBar = require('progress');
 
 module.exports = {
   questions: [
@@ -70,12 +70,12 @@ module.exports = {
       const inputDir = path.join(data.inputDir, '**/*');
       const files = await glob(inputDir);
 
-      const bar = new ProgressBar('[:bar] :percent | :etas | :current / :total | :rate/fps ', {
-        total: files.length,
-        complete: '=',
-        incomplete: ' ',
-        width: 20,
-      });
+      // const bar = new ProgressBar('[:bar] :percent | :etas | :current / :total | :rate/fps ', {
+      //   total: files.length,
+      //   complete: '=',
+      //   incomplete: ' ',
+      //   width: 20,
+      // });
 
       const relativeFiles = files.map(file => path.relative(data.inputDir, file));
       for (let i = 0; i < relativeFiles.length; i++) {
@@ -90,7 +90,7 @@ module.exports = {
           await sftp.fastPut(inputFilePath, outputFilePath);
         }
 
-        bar.tick();
+        // bar.tick();
       }
     } catch (err) {
       console.log(err);
