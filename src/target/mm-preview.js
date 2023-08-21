@@ -74,7 +74,7 @@ const preview = {
       .map((file) => {
         return {
           filePath: file,
-          s3Path: data.outputDir + path.relative(data.inputDir, file).replace('\\', '/'),
+          s3Path: data.outputDir + path.relative(data.inputDir, file).replace(/\\/g, '/'),
           contentType: mime.lookup(file),
           content: fs.readFileSync(file),
         };
