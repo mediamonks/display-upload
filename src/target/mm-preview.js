@@ -69,8 +69,6 @@ const preview = {
 
     const allFiles = await globPromise(`${data.inputDir.replace(/\\/g, '/')}/**/*`);
 
-    console.log('am I here?');
-
     const filesArray = allFiles
       .filter((file) => fs.lstatSync(file).isFile())
       .map((file) => {
