@@ -69,40 +69,34 @@ const preview = {
 
     const allFiles = await globPromise(`${data.inputDir.replace(/\\/g, '/')}/**/*`);
 
-    const filesArray = allFiles
-      .filter((file) => fs.lstatSync(file).isFile())
-      .map((file) => {
-        return {
-          filePath: file,
-          s3Path: data.outputDir + path.relative(data.inputDir, file).replace(/\\/g, '/'),
-          contentType: mime.lookup(file),
-          content: fs.readFileSync(file),
-        };
-      });
+    const filesArray = await Promise.all(
+      (await Promise.all(
+        allFiles.map(async file => {
+          if ((await fs.promises.lstat(file)).isFile()) {
+            return file
+          }
+        })
+      ))
+      .filter(file => file !== undefined)
+      .map(async file => new PutObjectCommand({
+        Bucket: data.bucket,
+        Key: data.outputDir + path.relative(data.inputDir, file).replace(/\\/g, '/'),
+        ContentType: mime.lookup(file),
+        Body: await fs.promises.readFile(file),
+      }))
+    )
 
     const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
     progressBar.start(filesArray.length, 0);
 
     await Promise.all(
-      filesArray.map((file) => {
-        return new Promise(async (resolve) => {
-          const params = {
-            Bucket: data.bucket,
-            Key: file.s3Path,
-            Body: file.content,
-            ContentType: file.contentType,
-          };
-
-          try {
-            await client.send(new PutObjectCommand(params));
-            progressBar.increment();
-            resolve(data);
-          } catch (error) {
-            console.log(error);
-          } finally {
-            // finally.
-          }
-        });
+      filesArray.map(async file => {
+        try {
+          await client.send(file);
+        } catch (e) {
+          console.log(e);
+        }
+        progressBar.increment();
       }),
     );
 
