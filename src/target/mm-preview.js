@@ -69,22 +69,17 @@ const preview = {
 
     const allFiles = await globPromise(`${data.inputDir.replace(/\\/g, '/')}/**/*`);
 
-    const filesArray = await Promise.all(
-      (await Promise.all(
-        allFiles.map(async file => {
-          if ((await fs.promises.lstat(file)).isFile()) {
-            return file
-          }
+    const filesArray = (await Promise.all(allFiles.map(async file => {
+      if ((await fs.promises.lstat(file)).isFile()) {
+        return new PutObjectCommand({
+          Bucket: data.bucket,
+          Key: data.outputDir + path.relative(data.inputDir, file).replace(/\\/g, '/'),
+          ContentType: mime.lookup(file),
+          Body: await fs.promises.readFile(file),
         })
-      ))
-      .filter(file => file !== undefined)
-      .map(async file => new PutObjectCommand({
-        Bucket: data.bucket,
-        Key: data.outputDir + path.relative(data.inputDir, file).replace(/\\/g, '/'),
-        ContentType: mime.lookup(file),
-        Body: await fs.promises.readFile(file),
-      }))
-    )
+      }
+    })))
+    .filter(file => file !== undefined)
 
     const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
     progressBar.start(filesArray.length, 0);
