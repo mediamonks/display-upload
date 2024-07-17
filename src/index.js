@@ -7,6 +7,7 @@ const Filenames = require('./data/Filenames');
 const fs = require('fs-extra');
 const inquirer = require('inquirer');
 const path = require('path');
+const chalk = require('chalk')
 
 module.exports = async (options = {}, cli) => {
   const filepathRc = `./${Filenames.RC}`;
@@ -156,7 +157,9 @@ module.exports = async (options = {}, cli) => {
   await fs.writeJSON(filepathRc, data, {spaces: 2})
 
   // console.log(targetData)
+  const start = Date.now()
+
   await target.action(targetData);
 
-  console.log(`Done, Have a nice day.`);
+  console.log(chalk.green(`Done in ${Date.now() - start}ms, Have a nice day!`));
 };
