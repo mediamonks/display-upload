@@ -24,18 +24,3 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
-      - name: Slack Notification
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,job,took
-          mention: 'here'
-          if_mention: failure,cancelled
-          text: |
-            Deploy ${{ job.status }}
-            Repository: ${{ github.repository }}
-            Commit: ${{ github.sha }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
