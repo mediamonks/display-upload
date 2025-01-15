@@ -1,6 +1,6 @@
-# display-upload [![Travis](https://img.shields.io/travis/mediamonks/henk.svg)](https://travis-ci.org/mediamonks/richmedia-temple-server) [![npm](https://img.shields.io/npm/v/@mediamonks/henk.svg)](https://www.npmjs.com/package/@mediamonks/henk) [![npm](https://img.shields.io/npm/dm/@mediamonks/henk.svg)](https://www.npmjs.com/package/@mediamonks/richmedia-temple-server)
+# display-upload [![Travis](https://img.shields.io/travis/mediamonks/display-upload.svg)](https://travis-ci.org/mediamonks/display-upload) [![npm](https://img.shields.io/npm/v/@mediamonks/display-upload.svg)](https://www.npmjs.com/package/@mediamonks/display-upload) [![npm](https://img.shields.io/npm/dm/@mediamonks/display-upload.svg)](https://www.npmjs.com/package/@mediamonks/display-upload)
 
-Uploading files to a location. through the command line.
+Uploading files to a location through the command line.
 
 Currently supported
 
