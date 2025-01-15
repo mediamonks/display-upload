@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const globPromise = require('glob-promise');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { NodeHttpHandler } = require("@aws-sdk/node-http-handler");
 const cliProgress = require('cli-progress');
 
 const mime = require('mime-types');
@@ -65,6 +66,13 @@ const preview = {
         accessKeyId: data.accessKeyId,
         secretAccessKey: data.secretAccessKey,
       },
+      requestHandler: new NodeHttpHandler({
+        socketTimeout: 3000,
+        timeoutByRequestType: {
+          default: 3000
+        },
+        maxSockets: 200 // Increase from default 50
+      })
     });
 
     const allFiles = await globPromise(`${data.inputDir.replace(/\\/g, '/')}/**/*`);
